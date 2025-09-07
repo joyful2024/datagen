@@ -3,6 +3,7 @@ import sys
 import google.genai as genai
 from PIL import Image
 from io import BytesIO
+from pathlib import Path
 
 # --- Configuration ---
 # Load your API key from environment variables
@@ -75,18 +76,58 @@ def add_photocopy_artifacts(input_image_path: str, output_image_path: str):
         # Catch a general exception to handle various API errors
         print(f"An unexpected error occurred: {e}")
 
+def process_folder(input_folder: str, output_folder: str):
+    """
+    Processes all image files in the input folder and saves them to the output folder
+    with photocopy effects applied.
+    """
+    input_path = Path(input_folder)
+    output_path = Path(output_folder)
+    
+    # Validate input folder exists
+    if not input_path.exists() or not input_path.is_dir():
+        print(f"Error: Input folder '{input_folder}' does not exist or is not a directory.")
+        return
+    
+    # Create output folder if it doesn't exist
+    output_path.mkdir(parents=True, exist_ok=True)
+    
+    # Common image file extensions
+    image_extensions = {'.jpg', '.jpeg', '.png', '.bmp', '.tiff', '.tif', '.webp'}
+    
+    # Find all image files in input folder
+    image_files = []
+    for file_path in input_path.iterdir():
+        if file_path.is_file() and file_path.suffix.lower() in image_extensions:
+            image_files.append(file_path)
+    
+    if not image_files:
+        print(f"No image files found in '{input_folder}'")
+        return
+    
+    print(f"Found {len(image_files)} image files to process...")
+    
+    # Process each image file
+    for i, input_file in enumerate(image_files, 1):
+        print(f"\nProcessing {i}/{len(image_files)}: {input_file.name}")
+        
+        # Generate output filename with photocopy effect suffix
+        file_name = input_file.stem  # filename without extension
+        file_extension = input_file.suffix
+        output_filename = f"{file_name}_photocopy_effect{file_extension}"
+        output_file = output_path / output_filename
+        
+        # Process the image
+        add_photocopy_artifacts(str(input_file), str(output_file))
+
 # --- Example Usage ---
 if __name__ == "__main__":
     # Check for the correct number of command line arguments
-    if len(sys.argv) < 2:
-        print("Usage: python script_name.py <input_image_file_path>")
+    if len(sys.argv) < 3:
+        print("Usage: python script_name.py <input_folder> <output_folder>")
         sys.exit(1)
 
-    # The first argument (sys.argv[0]) is the script name itself
-    input_img = sys.argv[1]
-    
-    # Generate an output file name based on the input
-    file_name, file_extension = os.path.splitext(input_img)
-    output_img = f"{file_name}_photocopy_effect{file_extension}"
+    input_folder = sys.argv[1]
+    output_folder = sys.argv[2]
 
-    add_photocopy_artifacts(input_img, output_img)
+    process_folder(input_folder, output_folder)
