@@ -41,7 +41,7 @@ def add_fax_artifacts(input_image_path: str, output_image_path: str):
 
         # 2. Define the text prompt for the image edit
         prompt = """
-        Add realistic fax artifacts, grain, and slight distortions to this image, making it look like a fax machine output.
+        Add realistic fax artifacts, grain, and slight distortions to this image, making it look like a fax machine.
 
         When a document is sent over a fax machine, a series of steps involving scanning, data compression, and transmission over a phone line can introduce a number of distinctive visual imperfections, known as artifacts. These are rarely seen in modern digital documents (like PDFs or JPEGs) unless they are intentionally designed to mimic a fax.
 
@@ -119,7 +119,7 @@ These artifacts are what give a faxed document its distinctive, low-fidelity app
 def process_folder(input_folder: str, output_folder: str):
     """
     Processes all image files in the input folder and saves them to the output folder
-    with fax effects applied.
+    with fax machine effects applied.
     """
     input_path = Path(input_folder)
     output_path = Path(output_folder)
@@ -154,7 +154,7 @@ def process_folder(input_folder: str, output_folder: str):
         # Generate output filename with fax effect suffix
         file_name = input_file.stem  # filename without extension
         file_extension = input_file.suffix
-        output_filename = f"{file_name}_fax_effect{file_extension}"
+        output_filename = f"{file_name}_fax{file_extension}"
         output_file = output_path / output_filename
         
         # Process the image

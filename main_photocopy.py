@@ -114,7 +114,7 @@ def process_folder(input_folder: str, output_folder: str):
         # Generate output filename with photocopy effect suffix
         file_name = input_file.stem  # filename without extension
         file_extension = input_file.suffix
-        output_filename = f"{file_name}_photocopy_effect{file_extension}"
+        output_filename = f"{file_name}_photocopy{file_extension}"
         output_file = output_path / output_filename
         
         # Process the image
